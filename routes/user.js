@@ -11,6 +11,8 @@ router.post('/login', userController.login);
 
 router.post('/msg', userAuthentication.authentication ,userController.addMsg);
 
+router.get('/getmsgs', userAuthentication.authentication ,userController.getMsgs);
+
 // router.get('/download', userAuthentication.authentication , userController.download);
 
 module.exports=router;

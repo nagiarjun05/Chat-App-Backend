@@ -97,6 +97,21 @@ const addMsg = async (req, res) =>{
     }
 }
 
+const getMsgs= async (req, res) =>{
+    try{
+        const Messages=await Message.findAll({
+            where:{userId: req.user.id}
+        });
+
+        res.status(201).json({success: true, Messages: Messages});
+    }
+    catch(err){
+        res.status(500).json({
+            message: err
+        })
+    }
+}
+
 // function uploadToS3(data, filename){
 //     let s3bucket=new AWS.S3({
 //         accessKeyId:process.env.IAM_USER_KEY,
@@ -145,6 +160,7 @@ const addMsg = async (req, res) =>{
 module.exports={
     signup,
     login,
-    addMsg
+    addMsg,
+    getMsgs
     // download
 };
