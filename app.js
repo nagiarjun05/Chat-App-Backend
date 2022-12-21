@@ -9,8 +9,8 @@ const bodyParser = require('body-parser');
 
 const sequelize =require('./util/database')
 
-// const User=require('./models/User');
-// const ForgetPassword = require('./models/forgetpassword');
+const User=require('./models/User');
+const Message = require('./models/message');
 // const FilesDownloaded=require('./models/downloadedfiles');
 
 app.use(cors());
@@ -34,8 +34,8 @@ app.use('/users',userRoutes);
 // app.use(errorController.get404);
 
 
-// User.hasMany(ForgetPassword);
-// ForgetPassword.belongsTo(User);
+User.hasMany(Message);
+Message.belongsTo(User);
 
 sequelize
 .sync()

@@ -1,5 +1,5 @@
 const User=require('../models/user');
-// const FileDownloaded=require('../models/downloadedfiles')
+const Message=require('../models/message')
 
 
 const bcrypt=require('bcrypt');
@@ -67,7 +67,7 @@ const login=async (req, res)=>{
                     return res.status(200).json({success: true, message: 'User Loged in Succesfully!', token:(generateTokken(users[0].dataValues.id,users[0].dataValues.name,users[0].dataValues.ispremiumuser))})
                 }
                 else{
-                    return res.status(400).json({success: false, message: 'Password is Inconrrect!'})
+                    return res.status(401).json({success: false, message: 'Password is Inconrrect!'})
                 }
             })
         }else{
@@ -80,6 +80,22 @@ const login=async (req, res)=>{
         })
     }
 };
+
+const addMsg = async (req, res) =>{
+    try{
+        const message=req.body.msg
+        await Message.create({
+            message: message,
+            userId: req.user.id
+        });
+        await res.status(201).json({success: true, message: "Succesfully Message Sent"});
+    }
+    catch(err){
+        res.status(500).json({
+            message: err
+        })
+    }
+}
 
 // function uploadToS3(data, filename){
 //     let s3bucket=new AWS.S3({
@@ -129,5 +145,6 @@ const login=async (req, res)=>{
 module.exports={
     signup,
     login,
+    addMsg
     // download
 };
