@@ -1,9 +1,9 @@
-const User=require('../models/User');
+const User=require('../models/user');
 // const FileDownloaded=require('../models/downloadedfiles')
 
 
 const bcrypt=require('bcrypt');
-// const jwt=require('jsonwebtoken');
+const jwt=require('jsonwebtoken');
 
 
 // const AWS=require('aws-sdk');
@@ -17,9 +17,9 @@ function stringValidator(string){
     }
 }
 
-// function generateTokken(id,name,ispremiumuser){
-//     return jwt.sign({userId: id, name: name, ispremiumuser}, 'secretToken')
-// }
+function generateTokken(id,name,ispremiumuser){
+    return jwt.sign({userId: id, name: name, ispremiumuser}, 'secretToken')
+}
 
 const signup= async (req, res)=>{
     try{
@@ -28,52 +28,58 @@ const signup= async (req, res)=>{
         const password=req.body.password;
 
         if (stringValidator(name)||stringValidator(email)||stringValidator(password)){
-            console.log("error")
             return res.status(400).json({err: "Bad Parameters . Something is missing"})
         }
+        const user= await User.findOne({where: {email}})
 
-        const saltRounds = 10;
-        bcrypt.hash(password, saltRounds, async(err, hash)=>{
-            await User.create({
-                name: name,
-                email: email,
-                password: hash
-            });
-            await res.status(201).json({success: true, message: "Succesfully create new User"});
-        }) 
+        if (user){
+            console.log('User Already Exist')
+            return res.status(402).json({success: false, message:"User already Exist"})
+        }else{
+            const saltRounds = 10;
+            bcrypt.hash(password, saltRounds, async(err, hash)=>{
+                await User.create({
+                    name: name,
+                    email: email,
+                    password: hash
+                });
+                await res.status(201).json({success: true, message: "Succesfully create new User"});
+            })
+        } 
     } catch(err){
+        console.log(err)
         res.status(500).json(err);
     }
 };
 
-// const login=async (req, res)=>{
-//     try{
-//         const {email, password}=req.body;
+const login=async (req, res)=>{
+    try{
+        const {email, password}=req.body;
 
-//         const users= await User.findAll({ where : { email }})
+        const users= await User.findAll({ where : { email }})
                 
-//         if (users.length>0){
-//             bcrypt.compare(password, users[0].dataValues.password, (err, result)=>{
-//                 if(err){
-//                     throw new Error('Something went wrong')
-//                 }
-//                 else if(result){
-//                     return res.status(200).json({success: true, message: 'User Loged in Succesfully!', token:(generateTokken(users[0].dataValues.id,users[0].dataValues.name,users[0].dataValues.ispremiumuser))})
-//                 }
-//                 else{
-//                     return res.status(400).json({success: false, message: 'Password is Inconrrect!'})
-//                 }
-//             })
-//         }else{
-//             return res.status(404).json({success: false, message: 'User Doesnt Exist!'})
-//         }
-//     }
-//     catch(err){
-//         res.status(500).json({
-//             message: err
-//         })
-//     }
-// };
+        if (users.length>0){
+            bcrypt.compare(password, users[0].dataValues.password, (err, result)=>{
+                if(err){
+                    throw new Error('Something went wrong')
+                }
+                else if(result){
+                    return res.status(200).json({success: true, message: 'User Loged in Succesfully!', token:(generateTokken(users[0].dataValues.id,users[0].dataValues.name,users[0].dataValues.ispremiumuser))})
+                }
+                else{
+                    return res.status(400).json({success: false, message: 'Password is Inconrrect!'})
+                }
+            })
+        }else{
+            return res.status(404).json({success: false, message: 'User Doesnt Exist!'})
+        }
+    }
+    catch(err){
+        res.status(500).json({
+            message: err
+        })
+    }
+};
 
 // function uploadToS3(data, filename){
 //     let s3bucket=new AWS.S3({
@@ -122,6 +128,6 @@ const signup= async (req, res)=>{
 
 module.exports={
     signup,
-    // login,
+    login,
     // download
 };

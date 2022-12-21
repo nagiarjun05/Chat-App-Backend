@@ -1,4 +1,4 @@
-const express = require('express')// const fs=require('fs');
+const express = require('express')
 const cors= require('cors');
 const app = express();
 
@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 
 const sequelize =require('./util/database')
 
-const User=require('./models/User');
+// const User=require('./models/User');
 // const ForgetPassword = require('./models/forgetpassword');
 // const FilesDownloaded=require('./models/downloadedfiles');
 
@@ -19,7 +19,7 @@ app.use(cors());
 
 const userRoutes=require('./routes/user');
 // const forgetpasswordRoutes=require('./routes/forgetpassword');
-const path = require('path');
+// const path = require('path');
 
 // To handle forms
 // app.use(bodyParser.urlencoded({ extended: false })); 
