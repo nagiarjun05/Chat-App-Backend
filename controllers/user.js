@@ -4,10 +4,8 @@ const Message=require('../models/message')
 
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
-
-
-// const AWS=require('aws-sdk');
-// const { param } = require('../routes/user');
+const Group = require('../models/group');
+const UserGroup=require('../models/usergroup')
 
 function stringValidator(string){
     if(string===undefined||string.length===0){
@@ -99,11 +97,10 @@ const addMsg = async (req, res) =>{
 
 const getMsgs= async (req, res) =>{
     try{
-        const Messages=await Message.findAll({
-            where:{userId: req.user.id}
-        });
+        const Messages=await Message.findAll();
+        const Users=await User.findAll();
 
-        res.status(201).json({success: true, Messages: Messages});
+        res.status(201).json({success: true, Messages: Messages, Users: Users});
     }
     catch(err){
         res.status(500).json({
@@ -112,55 +109,49 @@ const getMsgs= async (req, res) =>{
     }
 }
 
-// function uploadToS3(data, filename){
-//     let s3bucket=new AWS.S3({
-//         accessKeyId:process.env.IAM_USER_KEY,
-//         secretAccessKey:process.env.IAM_USER_SECRET
-//     })
+const getGroups=async(req, res)=>{
+    try{
+        const user=req.user;
 
-//     var params={
-//         Bucket:process.env.BUCKET_NAME,
-//         Key:filename,
-//         Body:data,
-//         ACL:'public-read'
-//     }
-    
-//     return new Promise((resolve, reject)=>{
-//         s3bucket.upload(params, (err, s3response)=>{
-//             if(err){
-//                 console.log(err)
-//                 reject(err)
-//             }else{
-//                 resolve(s3response.Location)
-//             }
-//         })
-//     })
-    
-// }
+        const groups=await user.getGroups()
 
-// const download=async (req, res)=>{
-//     try{
-//         const expenses= await req.user.getExpenses();
-//         const stringifiedExpenses=JSON.stringify(expenses);
+        if(groups.length>0){
+            res.status(200).json({success:true, groups: groups})
+        }else{
+            res.status(201).json({success:true, message:"User doesnt belongs to any group"})
+        }
+    }
+    catch(err){
+        res.status(500).json(err);
+    }
+};
 
-//         const filename=`Expense${req.user.id}/${new Date()}.txt`;
-//         const fileURL= await uploadToS3(stringifiedExpenses, filename);
-//         console.log(fileURL)
-//         await FileDownloaded.create({
-//             url: fileURL
-//         });
 
-//         res.status(201).json({fileURL, success: true})
-//     }
-//     catch{
-//         res.status(500).json({fileURL:'', success: false, err:err})
-//     }  
-// }
+const createGroup=async(req, res)=>{
+    try{
+        const user=req.user;
+
+        const group=await Group.create({
+            name: req.body.name
+        });
+
+        await UserGroup.create({
+            userId: user.id,
+            groupId: group.id
+        })
+        res.status(201).json({success: true, message: "Succesfully Message Sent", group:group});
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).json(err);
+    }
+}
 
 module.exports={
     signup,
     login,
     addMsg,
-    getMsgs
-    // download
+    getMsgs,
+    getGroups,
+    createGroup
 };

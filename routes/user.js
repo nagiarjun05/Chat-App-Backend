@@ -13,6 +13,8 @@ router.post('/msg', userAuthentication.authentication ,userController.addMsg);
 
 router.get('/getmsgs', userAuthentication.authentication ,userController.getMsgs);
 
-// router.get('/download', userAuthentication.authentication , userController.download);
+router.get('/groups', userAuthentication.authentication , userController.getGroups);
+
+router.post('/creategroup', userAuthentication.authentication , userController.createGroup)
 
 module.exports=router;

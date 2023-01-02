@@ -9,9 +9,11 @@ const bodyParser = require('body-parser');
 
 const sequelize =require('./util/database')
 
-const User=require('./models/User');
+const User=require('./models/user');
 const Message = require('./models/message');
-// const FilesDownloaded=require('./models/downloadedfiles');
+const Group=require('./models/group');
+const UserGroup=require('./models/usergroup');
+
 
 app.use(cors());
 // app.set('view engine', 'ejs');
@@ -36,6 +38,12 @@ app.use('/users',userRoutes);
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
+User.belongsToMany(Group,{through: UserGroup});
+Group.belongsToMany(User,{through: UserGroup});
+
+Group.hasMany(Message);
+Message.belongsTo(Group);
 
 sequelize
 .sync()
