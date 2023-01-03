@@ -1,6 +1,7 @@
 const express = require('express')
 const cors= require('cors');
 const app = express();
+const path = require('path');
 
 const dotenv=require('dotenv');
 dotenv.config();
@@ -14,14 +15,10 @@ const Message = require('./models/message');
 const Group=require('./models/group');
 const UserGroup=require('./models/usergroup');
 
-
 app.use(cors());
-// app.set('view engine', 'ejs');
-// app.set('views', 'views');
 
 const userRoutes=require('./routes/user');
 // const forgetpasswordRoutes=require('./routes/forgetpassword');
-// const path = require('path');
 
 // To handle forms
 // app.use(bodyParser.urlencoded({ extended: false })); 
@@ -29,12 +26,14 @@ const userRoutes=require('./routes/user');
 // To handle json
 app.use(bodyParser.json())
 
-
 app.use('/users',userRoutes);
+app.use((req, res)=>{
+    console.log('urlll', req.url);
+    res.sendFile(path.join(__dirname, `public/${req.url}`))
+});
 // app.use('/password',forgetpasswordRoutes);
 
 // app.use(errorController.get404);
-
 
 User.hasMany(Message);
 Message.belongsTo(User);
