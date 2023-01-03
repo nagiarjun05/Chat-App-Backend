@@ -18,7 +18,7 @@ create.addEventListener('click',(e)=>{
     e.preventDefault()
     axios({
         method:'post',
-        url:`http://localhost:3000/users/creategroup`,
+        url:`http://3.111.186.144:3000/users/creategroup`,
         data:{
             name: groupname.value
         },
@@ -38,7 +38,7 @@ groupList.addEventListener('click',(e)=>{
     navList.innerHTML='';
     axios({
         method:'get',
-        url:`http://localhost:3000/users/groups`,
+        url:`http://3.111.186.144:3000/users/groups`,
         headers:{'Authorization':token}
     })
     .then((res)=>{

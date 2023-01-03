@@ -32,7 +32,7 @@ window.addEventListener('load', ()=>{
 const showMessages=function (){
     axios({
         method:'get',
-        url: `http://localhost:3000/users/getmsgs`,
+        url: `http://3.111.186.144:3000/users/getmsgs`,
         headers:{'Authorization':token}
     })
     .then(res=>{
@@ -64,7 +64,7 @@ msgsend.addEventListener('click', (e)=>{
     }
     axios({
         method:'post',
-        url:`http://localhost:3000/users/msg`,
+        url:`http://3.111.186.144:3000/users/msg`,
         data:{
             msg: msgToSend
         },
@@ -94,7 +94,7 @@ groupList.addEventListener('click',(e)=>{
     navList.innerHTML='';
     axios({
         method:'get',
-        url:`http://localhost:3000/users/groups`,
+        url:`http://3.111.186.144:3000/users/groups`,
         headers:{'Authorization':token}
     })
     .then((res)=>{
