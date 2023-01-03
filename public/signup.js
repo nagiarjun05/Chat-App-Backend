@@ -13,7 +13,7 @@ signup.addEventListener('click',(e)=>{
     const  password=passWord.value;
     axios({
             method:'post',
-            url:`http://3.111.186.144:3000/users/signup`,
+            url:`http://15.206.54.199:3000/users/signup`,
             data:{
                 name: name,
                 email: email,

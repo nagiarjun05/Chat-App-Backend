@@ -24,7 +24,7 @@ groupList.addEventListener('click',(e)=>{
     navList.innerHTML='';
     axios({
         method:'get',
-        url:`http://3.111.186.144:3000/users/groups`,
+        url:`http://15.206.54.199:3000/users/groups`,
         headers:{'Authorization':token}
     })
     .then((res)=>{
