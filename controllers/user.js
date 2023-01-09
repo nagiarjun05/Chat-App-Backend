@@ -118,8 +118,7 @@ const getMsgs= async (req, res) =>{
         });
         
         const messageUser=await Message.findAll({
-            // attributes:['id','name'],
-            // order:['id','DESC'],
+            order:[['id','DESC']],
             include: User,
             offset: (page-1)*ITEM_PER_PAGE,
             limit:ITEM_PER_PAGE,
@@ -129,7 +128,7 @@ const getMsgs= async (req, res) =>{
             // }],
             // // group: ['user.id']
         });
-        
+        // console.log(messageUser)
         // console.log(messageUser)
         const Users=await User.findAll();
         
