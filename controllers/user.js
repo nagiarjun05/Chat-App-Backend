@@ -1,6 +1,5 @@
 const User=require('../models/user');
 const Message=require('../models/message')
-const fs = require('fs');
 
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
@@ -111,32 +110,25 @@ const addMsg = async (req, res) =>{
 const getMsgs= async (req, res) =>{
     try{
         const page= +req.query.page || 1;
-        const Messages=await Message.findAll({where:{groupId:req.query.groupId}});
-        
         const totalCount = await Message.count({
             include: User,
         });
-        
         const messageUser=await Message.findAll({
-            order:[['id','DESC']],
+            where:{
+                groupId:req.query.groupId
+            },
+            order:[['id','DESC']],  
             include: User,
             offset: (page-1)*ITEM_PER_PAGE,
             limit:ITEM_PER_PAGE,
-            // [{
-            //     model: Message,
-            //     // attributes:['message',]
-            // }],
-            // // group: ['user.id']
         });
-        // console.log(messageUser)
-        // console.log(messageUser)
+        
         const Users=await User.findAll();
         
         res.status(201).json({
             success: true, 
-            Messages: Messages, 
+            messageUser: messageUser, 
             Users: Users, 
-            messageUser: messageUser,
             currentPage:page,
             hasNextPage:ITEM_PER_PAGE*page<totalCount,
             nextPage:page+1,

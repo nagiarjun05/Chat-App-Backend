@@ -44,7 +44,7 @@ msgsend.addEventListener('click', (e)=>{
     }
     axios({
         method:'post',
-        url:`http://15.206.54.199:3000/users/msg`,
+        url:`http://localhost:3000/users/msg`,
         data:{
             msg: msgToSend,
             groupId: groupId
@@ -66,28 +66,37 @@ logout.addEventListener('onclick',(e)=>{
     window.location.href='/login.html'
 });
 
+document.querySelector('body').addEventListener('click',(e)=>{
+  if(e.target.className=='groupName'){
+    localStorage.setItem("groupName",e.target.innerHTML);
+    localStorage.setItem("groupId",e.target.getAttribute('value'));
+    const page=1;
+    showMessages(page)
+  }
+});
+
 groupList.addEventListener('click',(e)=>{
-    e.preventDefault()
-    navList.innerHTML='';
-    axios({
-        method:'get',
-        url:`http://15.206.54.199:3000/users/groups`,
-        headers:{'Authorization':token}
+  e.preventDefault()
+  navList.innerHTML='';
+  axios({
+    method:'get',
+    url:`http://localhost:3000/users/groups`,
+    headers:{'Authorization':token}
+  })
+  .then((res)=>{
+    nav.classList.toggle('active');
+    res.data.groups.forEach((group)=>{
+      const li=document.createElement('li');
+      li.classList='group-item'
+      li.innerHTML=`
+      <a href="#" class="groupName" value="${group.id}">${group.name}</a>
+      `
+      navList.appendChild(li);          
     })
-    .then((res)=>{
-        nav.classList.toggle('active');
-        res.data.groups.forEach((group)=>{
-            const li=document.createElement('li');
-            li.classList='group-item'
-            li.innerHTML=`
-            <a href="#" value="${group.name}">${group.name}</a>
-            `
-            navList.appendChild(li);          
-        })
-    })
-    .catch((err)=>{
-        console.log(err.message)
-    })
+  })
+  .catch((err)=>{
+      console.log(err.message)
+  })
 });
 
 createGroup.addEventListener('click',()=>{
@@ -108,6 +117,14 @@ window.addEventListener('load', ()=>{
   // },1000)
 });
 
+document.querySelector('body').addEventListener('click',async (e)=>{
+  if(e.target.className=='groupName'){
+    localStorage.setItem("groupName",e.target.innerHTML);
+    localStorage.setItem("groupId",e.target.getAttribute('value'));
+    window.location.href='/chat.html';
+  }
+});
+
 const showMessages=function (page){
     document.getElementById("groupname").innerHTML = `${groupName} Group`;
     document.getElementById("username").innerHTML = `<small class="grp-user">Hey! </small> ${User}`;
@@ -116,7 +133,7 @@ const showMessages=function (page){
     getFiles()
     axios({
         method:'get',
-        url: `http://15.206.54.199:3000/users/getmsgs?groupId=${groupId}&groupName=${groupName}&page=${page}`,
+        url: `http://localhost:3000/users/getmsgs?groupId=${groupId}&groupName=${groupName}&page=${page}`,
         headers:{'Authorization':token}
     })
     .then(res=>{
@@ -199,7 +216,7 @@ function pagination(currentPage,hasNextPage,nextPage,hasPreviousPage,previousPag
 
 async function isAdmin() {
     try {
-      let response = await axios.get(`http://15.206.54.199:3000/users/isAdmin?groupId=${groupId}`, { headers: { "Authorization": token } });
+      let response = await axios.get(`http://localhost:3000/users/isAdmin?groupId=${groupId}`, { headers: { "Authorization": token } });
       localStorage.setItem('isAdmin', response.data);
       if (JSON.parse(localStorage.getItem('isAdmin'))) {
         document.getElementById('add-user').classList.add('admin');
@@ -256,7 +273,7 @@ async function showFileOnScreen(data) {
 
 async function getFiles() {
   const files = localStorage.getItem(`file${groupId}`);
-  let response = await axios.get(`http://15.206.54.199:3000/users/getfile?groupId=${groupId}`, { headers: { "Authorization": token } });
+  let response = await axios.get(`http://localhost:3000/users/getfile?groupId=${groupId}`, { headers: { "Authorization": token } });
   let data = response.data.urls;
   setTimeout(() => {
     showFileOnScreen(data)
@@ -267,7 +284,7 @@ async function getFiles() {
 async function getUsers() {
     try {
       let response = await axios.get(
-        `http://15.206.54.199:3000/users/getusers?groupId=${groupId}`,
+        `http://localhost:3000/users/getusers?groupId=${groupId}`,
         { headers: { "Authorization": token } }
       );
       let admin = JSON.parse(localStorage.getItem('isAdmin'));
@@ -317,7 +334,7 @@ async function removeUser(userId) {
       groupId
     };
     try {
-      let response = await axios.post('http://15.206.54.199:3000/users/remove-user', details, { headers: { "Authorization": token } });
+      let response = await axios.post('http://localhost:3000/users/remove-user', details, { headers: { "Authorization": token } });
       alert('User removed Successfully!');
       removeUserFromScreen(response.data.user);
     } catch (error) {
@@ -343,7 +360,7 @@ async function makeAdmin(userId) {
     };
     console.log(details)
     try {
-      let response = await axios.post(`http://15.206.54.199:3000/users/makeAdmin`, details, { headers: { "Authorization": token } });
+      let response = await axios.post(`http://localhost:3000/users/makeAdmin`, details, { headers: { "Authorization": token } });
       alert('User is Admin now!');
     } catch (error) {
       console.log(error, { message: 'unknown error occurred! Cannot change admin rights.' });
@@ -356,7 +373,7 @@ async function removeAdmin(userId) {
       groupId
     };
     try {
-      let response = await axios.post('http://15.206.54.199:3000/users/removeAdmin', details, { headers: { "Authorization": token } });
+      let response = await axios.post('http://localhost:3000/users/removeAdmin', details, { headers: { "Authorization": token } });
       alert('Removed Admin rights from User!');
     } catch (error) {
       console.log(error, { message: 'Cannot make admin! Error occurred' });
@@ -370,7 +387,7 @@ document.getElementById('form-group').onsubmit = async function (e) {
       groupId: groupId
     };
     try {
-      let response = await axios.post('http://15.206.54.199:3000/users/addUser', details, { headers: { "Authorization": token } });
+      let response = await axios.post('http://localhost:3000/users/addUser', details, { headers: { "Authorization": token } });
       displayGroupAdminUser(response.data.user);
       alert('User added to group successfully!');
       document.querySelector('.groupName').value = '';
@@ -391,7 +408,7 @@ const fileform = document.getElementById('uploadForm')
 fileform.addEventListener('submit', async function (e) {
   e.preventDefault();
   let formData = new FormData(fileform)
-  let response = await axios.post(`http://15.206.54.199:3000/users/postfile?groupId=${groupId}`, formData, { headers: { "Authorization": token, "Content-Type": "multipart/form-data" } });
+  let response = await axios.post(`http://localhost:3000/users/postfile?groupId=${groupId}`, formData, { headers: { "Authorization": token, "Content-Type": "multipart/form-data" } });
   let data = response.data
   console.log(data)
   let chatData = []

@@ -18,7 +18,7 @@ create.addEventListener('click',(e)=>{
     e.preventDefault()
     axios({
         method:'post',
-        url:`http://15.206.54.199:3000/users/creategroup`,
+        url:`http://localhost:3000/users/creategroup`,
         data:{
             name: groupname.value
         },
@@ -38,7 +38,7 @@ groupList.addEventListener('click',(e)=>{
     navList.innerHTML='';
     axios({
         method:'get',
-        url:`http://15.206.54.199:3000/users/groups`,
+        url:`http://localhost:3000/users/groups`,
         headers:{'Authorization':token}
     })
     .then((res)=>{
@@ -56,6 +56,15 @@ groupList.addEventListener('click',(e)=>{
         console.log(err.message)
     })
 });
+
+document.querySelector('body').addEventListener('click',async (e)=>{
+    if(e.target.className=='groupName'){
+      localStorage.setItem("groupName",e.target.innerHTML);
+      localStorage.setItem("groupId",e.target.getAttribute('value'));
+      window.location.href='/chat.html';
+    }
+});
+
 
 removeNav.addEventListener('click', (e)=>{
     e.preventDefault();
