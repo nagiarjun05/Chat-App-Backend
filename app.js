@@ -14,6 +14,7 @@ const User=require('./models/user');
 const Message = require('./models/message');
 const Group=require('./models/group');
 const UserGroup=require('./models/usergroup');
+const uploadData = require("./models/uploaddata");
 
 app.use(cors());
 
@@ -36,13 +37,16 @@ app.use((req, res)=>{
 // app.use(errorController.get404);
 
 User.hasMany(Message);
-Message.belongsTo(User);
+Message.belongsTo(User,{ constraints: true, onDelete:"CASCADE"});
 
 User.belongsToMany(Group,{through: UserGroup});
 Group.belongsToMany(User,{through: UserGroup});
 
 Group.hasMany(Message);
-Message.belongsTo(Group);
+Message.belongsTo(Group,{ constraints: false, onDelete:"CASCADE"});
+
+User.hasMany(uploadData);
+uploadData.belongsTo(User);
 
 sequelize
 .sync()

@@ -24,7 +24,7 @@ groupList.addEventListener('click',(e)=>{
     navList.innerHTML='';
     axios({
         method:'get',
-        url:`http://15.206.54.199:3000/users/groups`,
+        url:`http://localhost:3000/users/groups`,
         headers:{'Authorization':token}
     })
     .then((res)=>{
@@ -33,7 +33,7 @@ groupList.addEventListener('click',(e)=>{
             const li=document.createElement('li');
             li.classList='group-item'
             li.innerHTML=`
-            <a class="groups" value="${group.name}">${group.name}</a>
+            <a class="groups" value="${group.id}">${group.name}</a>
             `
             navList.appendChild(li);          
         })
@@ -51,7 +51,9 @@ parent_element.addEventListener('click',(e)=>{
     e.preventDefault(e)
     // console.log(e.target);
     if(e.target.className==='groups'){
-        window.location.href=`/chat.html?group=${e.target.parentNode.children[0].innerHTML}`
+        localStorage.setItem('groupName',e.target.innerHTML)
+        localStorage.setItem('groupId',e.target.getAttribute('value'))
+        window.location.href=`/chat.html`
     }
 });
 

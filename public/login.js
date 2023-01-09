@@ -17,7 +17,7 @@ login.addEventListener('click',(e)=>{
 
     axios({
         method:'post',
-        url:`http://15.206.54.199:3000/users/login`,
+        url:`http://localhost:3000/users/login`,
         data:{
             email: email,
             password: password
@@ -27,6 +27,9 @@ login.addEventListener('click',(e)=>{
         // console.log(res.data.token)
         alert(res.data.message)
         localStorage.setItem('token', res.data.token)
+        localStorage.setItem('userId', res.data.user.id)
+        localStorage.setItem('User', res.data.user.name)
+
         window.location.href="/home.html"
     })
     .catch((err)=>{

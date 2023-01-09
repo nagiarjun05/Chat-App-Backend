@@ -4,7 +4,7 @@ const authentication=(req, res, next)=>{
     try{
         const token=req.headers.authorization;
         const user=jwt.verify(token, 'secretToken')
-        // console.log(user.userId)
+        // console.log(req.params)
         User.findByPk(user.userId)
         .then((user)=>{
             req.user=user;

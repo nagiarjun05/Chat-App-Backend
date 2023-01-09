@@ -9,6 +9,9 @@
 </head>
 <body>
     <header>
+        <div>
+            <p id="groupname">Null</p>
+        </div>
         <button id="show-groups">Groups</button>
         <nav id="nav">
             <button class="cancel" >X</button>
@@ -18,15 +21,46 @@
         <button id="logout">Log Out</button>
     </header>
     <button id="create-group">Create Group</button>
-    <h1>User Available</h1>
-    <div>
-        <ul id="user-list">
-
-        </ul>
-    </div>   
-    <h1>Chat</h1>
+    <aside>
+        <h3  id="username"></h3>
+        <br />
+        <header>
+          <div class="search-box" id="add-user">
+            <form class="search-box" id="form-group">
+              <input class="search-input groupName" type="text" name="email" placeholder="Type user's email:" />
+              <button>Search</button>
+            </form>
+          </div>
+        </header>
+        <hr class="hrtag" />
+        <ul id="group"></ul>
+    </aside>
     <ul id="chat">
     </ul>
+    <section class="pagination">
+    </section>
+    <button id="open-modal-button">Sent files!</button>
+        <div id="modal" class="modal">
+          <div class="modal-content">
+            <ul id="filemsg">
+              Sent and Recieved Files! 
+              <br />
+              <hr />
+            </ul>
+            <button class="btn btn-danger btn-sm" id="close-modal-button">Close</button>
+            <br>
+          </div>
+        </div>
+        <form
+        ref="uploadForm"
+        id="uploadForm"
+        method="post"
+        action="http://localhost:3000/message/postfile"
+        enctype="multipart/form-data"
+      >
+        <input type="file" class="btn btn-sm" name="inputFile" id="inp" />
+        <button type="submit">Send</button>
+    </form>
     <footer class="foot">
         <form class="message-sending-input">
             <label for="textmsg">Enter Your Message : </label>
