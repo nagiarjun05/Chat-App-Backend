@@ -17,7 +17,7 @@ login.addEventListener('click',(e)=>{
 
     axios({
         method:'post',
-        url:`http://localhost:3000/users/login`,
+        url:`http://15.206.54.199:3000/users/login`,
         data:{
             email: email,
             password: password
